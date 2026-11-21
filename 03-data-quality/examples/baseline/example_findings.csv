@@ -1,0 +1,2 @@
+rule_id,severity,source,source_line,order_id,purchase_month,field,observed,expected,action
+VALUE_VARIANCE,warning,orders,11,00bca4adac549020c1273714d04d0208,2017-02,payment_minus_items_and_freight_cents,11130,0 for an exact match,Investigate payment versus merchandise and freight in the source.

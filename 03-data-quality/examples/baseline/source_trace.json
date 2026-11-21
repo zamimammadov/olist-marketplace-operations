@@ -1,0 +1,42 @@
+{
+  "purchase_batch": "2017-01",
+  "order_id": "0cafd6a7576a6aae0f891008a87f1546",
+  "source_order_line": 148,
+  "source_status": "unavailable",
+  "items": [],
+  "payments": [
+    {
+      "line": 14,
+      "sequence": "1",
+      "type": "credit_card",
+      "paid_cents": 1090
+    },
+    {
+      "line": 628,
+      "sequence": "2",
+      "type": "voucher",
+      "paid_cents": 3112
+    }
+  ],
+  "source_totals": {
+    "item_count": 0,
+    "payment_count": 2,
+    "item_value_cents": 0,
+    "freight_cents": 0,
+    "payment_value_cents": 4202
+  },
+  "published_rows": [
+    {
+      "line": 248,
+      "measures": {
+        "item_count": 0,
+        "payment_count": 2,
+        "item_value_cents": 0,
+        "freight_cents": 0,
+        "payment_value_cents": 4202
+      }
+    }
+  ],
+  "published_measures_match_source": true,
+  "source_payment_gap_cents": 4202
+}

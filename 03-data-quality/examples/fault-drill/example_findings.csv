@@ -1,0 +1,5 @@
+rule_id,severity,source,source_line,order_id,purchase_month,field,observed,expected,action
+ORDER_DOMAIN,error,orders,3,00125cb692d04887809806618a2a145f,,customer_state,ZZ,One of the documented source codes,Check the order status or customer-state mapping.
+VALUE_VARIANCE,warning,orders,4,001dbc16dc51075e987543d23a0507c7,2017-01,payment_minus_items_and_freight_cents,700,0 for an exact match,Investigate payment versus merchandise and freight in the source.
+DUPLICATE_ORDER,error,orders,5264,00042b26cf59d7ce69dfabb4e55b4fd9,,order_id,Repeated from line 2,One published row per order,Check the mart grain and replay logic.
+CONTROL_TOTAL,error,reconciliation,,,2017-01,payment_value_cents,13849504,13848804,"Investigate the month, measure and both source child aggregates."

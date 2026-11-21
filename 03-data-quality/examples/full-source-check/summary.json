@@ -1,0 +1,31 @@
+{
+  "action": "Release with the documented caveats. Review warning findings and delivery coverage.",
+  "decision": "PASS_WITH_WARNINGS",
+  "error_findings": 0,
+  "inputs_and_rules": {
+    "checks_sha256": "c5f3c15f04183af2b2ef0180eddfd4252363dea683e7ae7a82d6bc1c23ebbeca",
+    "gate_sha256": "6d2c51e04b1cf733a12c8bd252e78cbe8ec2f46a836f0d410989a226d5a67ae2",
+    "orders_sha256": "167dea8d80184df2fc46cd3fde0cbd36bd68731bdb46a318ea8ef5e5c1df99de",
+    "source_controls_sha256": "5ec46f93cded60daa44a366745735af899214004bdc6f3ed96ae7ed530f56eb4"
+  },
+  "profile": {
+    "checks_compared": 150,
+    "control_rows": 25,
+    "delivered_missing_date_rows": 8,
+    "eligible_delivered_rows": 96470,
+    "late_rows": 6534,
+    "on_time_rate": 0.9322690992018244,
+    "on_time_rows": 89936,
+    "order_months": 25,
+    "order_rows": 99441,
+    "payment_gap_gross_cents": 16600736,
+    "source_months": 25,
+    "typed_order_rows": 99441
+  },
+  "rule_counts": {
+    "DELIVERY_COVERAGE": 14,
+    "VALUE_VARIANCE": 1349
+  },
+  "run_id": "847549e52228d7748fd6fe16965c60834531099f30a0b4cc2db741e7b02c029d",
+  "warning_findings": 1363
+}

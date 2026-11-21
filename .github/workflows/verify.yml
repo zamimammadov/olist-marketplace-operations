@@ -1,0 +1,23 @@
+name: Verify source-to-report demo
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check cohort integration and milestone replay
+        working-directory: 01-integration
+        run: python -m unittest discover -s tests -v
+      - name: Check quality rules and evidence publication
+        working-directory: 03-data-quality
+        run: python -m unittest discover -s tests -v
+      - name: Check report metadata and cohort measures
+        working-directory: 02-power-bi
+        run: python tools/validate_project.py
+      - name: Run connected source-to-report release and failure drill
+        run: python run_demo.py

@@ -1,0 +1,40 @@
+table Calendar
+	lineageTag: d9dc893d-5432-5407-9383-0fa86a53489f
+	dataCategory: Time
+
+	column 'Date'
+		dataType: dateTime
+		lineageTag: 39c95de2-cc01-5358-8950-c1cd10687ab5
+		sourceColumn: Date
+		summarizeBy: none
+		isKey
+		formatString: yyyy-MM-dd
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Month'
+		dataType: string
+		lineageTag: d51502bc-02b4-56e1-8014-3ff2513a8b6e
+		sourceColumn: Month
+		summarizeBy: none
+
+	column 'Week start'
+		dataType: dateTime
+		lineageTag: 4e646700-357b-5c1a-acac-a4d2d0a221dd
+		sourceColumn: WeekStart
+		summarizeBy: none
+		formatString: yyyy-MM-dd
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Calendar = m
+		mode: import
+		source =
+				let
+				    Purchases = Orders[purchase_date],
+				    StartDate = if List.IsEmpty(Purchases) then null else List.Min(Purchases),
+				    EndDate = if StartDate = null then null else List.Max(Purchases),
+				    Dates = if StartDate = null then {} else List.Dates(StartDate, Duration.Days(EndDate - StartDate) + 1, #duration(1,0,0,0)),
+				    Calendar = Table.FromColumns({Dates}, type table [Date=date]),
+				    AddMonth = Table.AddColumn(Calendar, "Month", each Date.ToText([Date], "yyyy-MM", "en-US"), type text),
+				    AddWeek = Table.AddColumn(AddMonth, "WeekStart", each Date.StartOfWeek([Date], Day.Monday), type date)
+				in
+				    AddWeek

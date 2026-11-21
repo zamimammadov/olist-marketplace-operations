@@ -1,0 +1,33 @@
+{
+  "action": "Withhold the mart. Resolve all errors and validate the corrected delivery.",
+  "decision": "HOLD",
+  "error_findings": 15,
+  "inputs_and_rules": {
+    "checks_sha256": "c5f3c15f04183af2b2ef0180eddfd4252363dea683e7ae7a82d6bc1c23ebbeca",
+    "gate_sha256": "6d2c51e04b1cf733a12c8bd252e78cbe8ec2f46a836f0d410989a226d5a67ae2",
+    "orders_sha256": "c2fc5470f4bce0ad7276dee92b536870eb810a078d9faad075797e5fd52e0651",
+    "source_controls_sha256": "7b4110be423ccd5b758c114bbc1150d5707558cfca7a0ef04e8ec1c5eea60343"
+  },
+  "profile": {
+    "checks_compared": 18,
+    "control_rows": 3,
+    "delivered_missing_date_rows": 0,
+    "eligible_delivered_rows": 4949,
+    "late_rows": 187,
+    "on_time_rate": 0.9622145888058193,
+    "on_time_rows": 4762,
+    "order_months": 3,
+    "order_rows": 5263,
+    "payment_gap_gross_cents": 2474917,
+    "source_months": 3,
+    "typed_order_rows": 5262
+  },
+  "rule_counts": {
+    "CONTROL_TOTAL": 13,
+    "DUPLICATE_ORDER": 1,
+    "ORDER_DOMAIN": 1,
+    "VALUE_VARIANCE": 133
+  },
+  "run_id": "0e5022eb0f32ea98719919c65f4a4f660c5721a8650b23e62047014f1ada56d9",
+  "warning_findings": 133
+}

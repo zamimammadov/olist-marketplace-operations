@@ -1,0 +1,3 @@
+relationship b77b1fa3-1a17-5346-a060-b867987f6d15
+	fromColumn: Orders.'Purchase date'
+	toColumn: Calendar.Date

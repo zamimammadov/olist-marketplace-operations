@@ -1,0 +1,155 @@
+table Orders
+	lineageTag: b4905d24-9d93-52f4-888a-b7a527cd807e
+
+	column 'Order ID'
+		dataType: string
+		lineageTag: 91b51d64-1a73-5090-841d-88611baa2458
+		sourceColumn: order_id
+		summarizeBy: none
+
+	column 'Purchase date'
+		dataType: dateTime
+		lineageTag: 215fe846-8d41-5052-94fe-86385a84717f
+		sourceColumn: purchase_date
+		summarizeBy: none
+		formatString: yyyy-MM-dd
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'State'
+		dataType: string
+		lineageTag: 968d4167-d7f2-5a16-986d-af359c47fa23
+		sourceColumn: customer_state
+		summarizeBy: none
+
+	column 'Status'
+		dataType: string
+		lineageTag: c710d4ad-2878-5144-b2de-004249c7be6e
+		sourceColumn: order_status
+		summarizeBy: none
+
+	column 'Delivered date'
+		dataType: dateTime
+		lineageTag: 1e552791-c043-5ec2-a8e8-7f6f058a7c5c
+		sourceColumn: delivered_date
+		summarizeBy: none
+		formatString: yyyy-MM-dd
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Estimated date'
+		dataType: dateTime
+		lineageTag: 573f5654-1a93-5b1f-9265-f3b8af451f2a
+		sourceColumn: estimated_date
+		summarizeBy: none
+		formatString: yyyy-MM-dd
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Item count'
+		dataType: int64
+		lineageTag: 1cc0fddc-b4dd-5e05-858d-f122f4984afa
+		sourceColumn: item_count
+		summarizeBy: none
+
+	column 'Payment count'
+		dataType: int64
+		lineageTag: 8019fc0e-df0b-5403-a06f-595d894c09d7
+		sourceColumn: payment_count
+		summarizeBy: none
+
+	column 'Item value cents'
+		dataType: int64
+		lineageTag: c4701c61-f938-55ba-9dca-e68f27435eac
+		sourceColumn: item_value_cents
+		summarizeBy: none
+		isHidden
+
+	column 'Freight cents'
+		dataType: int64
+		lineageTag: d89f3da3-2122-5ad7-9ca3-9cc28bcda2fe
+		sourceColumn: freight_cents
+		summarizeBy: none
+		isHidden
+
+	column 'Payment value cents'
+		dataType: int64
+		lineageTag: 26f06487-aaeb-52c0-adb6-ca7be62405a6
+		sourceColumn: payment_value_cents
+		summarizeBy: none
+		isHidden
+
+	column 'Delivery outcome'
+		dataType: string
+		lineageTag: 189e60c7-a7d0-5f85-b03c-125a28ede12e
+		sourceColumn: delivery_outcome
+		summarizeBy: none
+
+	column 'Delivery days'
+		dataType: int64
+		lineageTag: 6bafbf33-9eb4-5b47-848a-c2564a4bcc7d
+		sourceColumn: delivery_days
+		summarizeBy: none
+
+	column 'Days past promise'
+		dataType: int64
+		lineageTag: 58e75478-a734-48dc-995b-f9fd5188a87e
+		sourceColumn: days_past_promise
+		summarizeBy: none
+
+	measure 'Unassessed orders' = [Orders placed] - [Assessed orders]
+		formatString: #,0
+		lineageTag: e4ad1541-70f0-48eb-a298-dccd29aa65d2
+
+	measure 'Orders placed' = COALESCE(COUNTROWS(Orders), 0)
+		formatString: #,0
+		lineageTag: 80d7778b-a4b5-50a7-bc40-4d8d6db36bf3
+
+	measure 'Item value' = DIVIDE(SUM(Orders[Item value cents]), 100)
+		formatString: "R$" #,0.00;("R$" #,0.00);"R$" 0.00
+		lineageTag: 9fce5bf1-711e-5390-a1b8-c85180f08391
+
+	measure 'Payment value' = DIVIDE(SUM(Orders[Payment value cents]), 100)
+		formatString: "R$" #,0.00;("R$" #,0.00);"R$" 0.00
+		lineageTag: 7538b82d-c5bc-57b9-8417-35720355cacc
+
+	measure 'Freight value' = DIVIDE(SUM(Orders[Freight cents]), 100)
+		formatString: "R$" #,0.00;("R$" #,0.00);"R$" 0.00
+		lineageTag: a3641961-6b08-58e7-ad8d-5dc2630ad988
+
+	measure 'Assessed orders' = CALCULATE([Orders placed], KEEPFILTERS(Orders[Delivery outcome] IN {"On time", "Late"}))
+		formatString: #,0
+		lineageTag: 789b0638-fe72-5c97-b447-dca1a8b3d4e4
+
+	measure 'On-time orders' = CALCULATE([Orders placed], KEEPFILTERS(Orders[Delivery outcome] = "On time"))
+		formatString: #,0
+		lineageTag: 56fb600a-5668-56a6-a458-99ab0b590f3a
+
+	measure 'Late orders' = COALESCE(CALCULATE([Orders placed], KEEPFILTERS(Orders[Delivery outcome] = "Late")), 0)
+		formatString: #,0
+		lineageTag: 27481f4c-d979-59a8-a3c6-f695f8bfb858
+
+	measure 'On-time share' = DIVIDE(COALESCE([On-time orders], 0), [Assessed orders])
+		formatString: 0.0%
+		lineageTag: e3b54444-4355-5ea6-a0dd-34c7a6b035d6
+
+	measure 'Mean delivery days' = CALCULATE(AVERAGE(Orders[Delivery days]), KEEPFILTERS(Orders[Delivery outcome] IN {"On time", "Late"}))
+		formatString: 0.0
+		lineageTag: e50c7202-fe97-5d6e-927d-dc26a9fe664a
+
+	partition Orders = m
+		mode: import
+		source =
+				let
+				    Bytes = if Text.Trim(OrdersCsvPath) = "" then EmbeddedOrders else File.Contents(OrdersCsvPath),
+				    Csv = Csv.Document(Bytes, [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Csv, [PromoteAllScalars=true]),
+				    SourceColumns = Table.SelectColumns(Headers, {"order_id","purchase_date","customer_state","order_status","delivered_date","estimated_date","item_count","payment_count","item_value_cents","freight_cents","payment_value_cents"}),
+				    Dates = Table.TransformColumns(SourceColumns, {
+				        {"purchase_date", each Date.FromText(_, [Format="yyyy-MM-dd", Culture="en-US"]), type date},
+				        {"delivered_date", each if _ = null or _ = "" then null else Date.FromText(_, [Format="yyyy-MM-dd", Culture="en-US"]), type nullable date},
+				        {"estimated_date", each if _ = null or _ = "" then null else Date.FromText(_, [Format="yyyy-MM-dd", Culture="en-US"]), type nullable date}
+				    }),
+				    Types = Table.TransformColumnTypes(Dates, {{"order_id",type text},{"customer_state",type text},{"order_status",type text},{"item_count",Int64.Type},{"payment_count",Int64.Type},{"item_value_cents",Int64.Type},{"freight_cents",Int64.Type},{"payment_value_cents",Int64.Type}}, "en-US"),
+				    Outcome = Table.AddColumn(Types, "delivery_outcome", each if [order_status] <> "delivered" or [delivered_date] = null or [estimated_date] = null then "Not assessed" else if [delivered_date] <= [estimated_date] then "On time" else "Late", type text),
+				    Days = Table.AddColumn(Outcome, "delivery_days", each if [delivered_date] = null then null else Duration.Days([delivered_date] - [purchase_date]), Int64.Type),
+				    Variance = Table.AddColumn(Days, "days_past_promise", each if [delivery_outcome] = "Not assessed" then null else Duration.Days([delivered_date] - [estimated_date]), Int64.Type)
+				in
+				    Variance

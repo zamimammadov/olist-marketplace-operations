@@ -1,0 +1,4 @@
+**/.pbi/
+**/.platform.local
+**/__pycache__/
+*.pbix
